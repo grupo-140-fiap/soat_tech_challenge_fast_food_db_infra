@@ -2,7 +2,6 @@
 #   default = true
 # }
 
-
 data "aws_vpc" "main" {
   id = "vpc-07a12b532c2f77370"
 }
