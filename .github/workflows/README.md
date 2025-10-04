@@ -11,7 +11,9 @@ Este projeto é parte do **Tech Challenge - Fase 03**, implementando um sistema 
 - [Execução do Pipeline via Github Actions](#-execucaoo-do-pipeline-via-github-actions)
 
 
-## 🏗️ Pipeline
+## 🏗️ Pipeline Banco de dados
+
+Pipeline com Github Actions para implementar infraestrutura de banco de dados com Terraform.
 
 ## ⚙️ Configuração
 
