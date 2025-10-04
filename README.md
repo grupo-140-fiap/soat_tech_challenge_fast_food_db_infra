@@ -25,6 +25,11 @@ Este repositório implementa a infraestrutura de banco de dados para o sistema d
 3. **Configurações** injetadas via **ConfigMap** (host, porta, database) e **Secret** (senha)
 4. **Dados persistidos** no **PVC** (10Gi) para sobreviver a restarts
 
+## ⚙️ Configuração
+
+### Pré-requisitos
+
+- **Git** - Para clonar o repositório
 
 ### Instalação
 
