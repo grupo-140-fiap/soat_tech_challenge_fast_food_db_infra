@@ -1,36 +1,10 @@
-# data "aws_vpc" "default" {
-#   default = true
-# }
+data "terraform_remote_state" "networking" {
+  backend = "s3"
 
-data "aws_vpc" "main" {
-  id = var.vpc_name
-}
-
-data "aws_subnets" "main" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.main.id]
+  config = {
+    bucket  = "soat-fast-food-terraform-states"
+    key     = "1-networking/terraform.tfstate"
+    region  = var.aws_region
+    profile = var.aws_profile
   }
-}
-
-data "aws_security_groups" "main" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.main.id]
-  }
-}
-
-# data "aws_eks_cluster" "eks" {
-#   name = "${local.eks_name}"
-# }
-
-
-output "security_groups" {
-  description = "The security_groups from vpc"
-  value       = data.aws_security_groups.main.ids
-}
-
-output "subnets" {
-  description = "The aws_subnets from vpc"
-  value       = data.aws_subnets.main.ids
 }
