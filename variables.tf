@@ -37,7 +37,7 @@ variable "db_username" {
 variable "db_password" {
   type        = string
   description = "Master password for the RDS instance"
-  sensitive   = true
+  #sensitive   = true
 }
 
 variable "db_instance_class" {
