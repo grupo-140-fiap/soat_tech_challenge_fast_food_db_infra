@@ -42,7 +42,7 @@ jobs:
       - id: plan
         name: Terraform plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color
+        run: terraform plan -no-color -var 'aws_profile=${{ env.AWS_ROLE_ARN }}'
 
       - id: push
         name: Terraform apply
