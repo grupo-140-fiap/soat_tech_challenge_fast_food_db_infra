@@ -10,6 +10,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  AWS_ROLE_ARN: arn:aws:iam::701612390900:role/service-role/GitHubActions
 
 jobs:
   plan:
@@ -41,7 +42,8 @@ jobs:
       - id: plan
         name: Terraform plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -var
+        run: terraform plan -no-color
+
       - id: push
         name: Terraform apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
