@@ -38,3 +38,8 @@ Este repositório implementa a infraestrutura de banco de dados para o sistema d
 git clone https://github.com/samuellalvs/soat_tech_challenge_fast_food_db_infra.git
 cd soat_tech_challenge_fast_food_db_infra
 ```
+
+## ⚙️ Pipeline de deploy do banco de dados via Github Actions
+```bash
+.github/workflows/pipeline.yml
+```
