@@ -3,7 +3,7 @@ terraform {
     bucket  = "soat-fast-food-terraform-states"
     key     = "rds/terraform.tfstate"
     region  = "us-east-1"
-    profile = "default"
+    profile = var.aws_profile
     encrypt = true
   }
 }
