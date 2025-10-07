@@ -1,21 +1,19 @@
-# resource "aws_subnet" "rds_subnets" {
-#   count             = 2
-#   vpc_id            = "${data.aws_vpc.main.id}"
-#   cidr_block        = "10.2.${count.index + 2}.0/24"
-#   availability_zone = "us-east-1a" # Example
-# }
+########################
+# RDS for Fast-Food App
+########################
 
-# RDS Security Group
+# Security Group scoped to the VPC; allow MySQL only from VPC CIDR
 resource "aws_security_group" "rds_sg" {
-  name_prefix = "rds-sg-${var.project_name}"
-  vpc_id      = "${data.aws_vpc.main.id}"
+  name_prefix = "rds-sg-${var.project_name}-"
+  vpc_id      = data.terraform_remote_state.networking.outputs.vpc_id
 
   ingress {
-    from_port       = 3306
-    to_port         = 3306
-    protocol        = "tcp"
-    security_groups = [data.aws_security_groups.main.ids[0]] # Allow connections from EKS nodes
-  } # module.eks.node_security_group_id
+    description = "MySQL from VPC"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = [data.terraform_remote_state.networking.outputs.vpc_cidr]
+  }
 
   egress {
     from_port   = 0
@@ -25,71 +23,63 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
-# RDS Subnet Group
+# Subnet group using private subnets from networking remote state
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "rds-subnet-group"
-  subnet_ids = data.aws_subnets.main.ids
-} # module.vpc.private_subnets
+  name       = "rds-subnet-group-${var.project_name}"
+  subnet_ids = data.terraform_remote_state.networking.outputs.private_subnet_ids
+}
 
 # MySQL RDS instance
 resource "aws_db_instance" "mysql_db" {
-  engine                 = "mysql"
-  engine_version         = "8.0"
-  instance_class         = "db.t3.micro"
-  allocated_storage      = 20
-  identifier             = "soatfastfood"
-  username               = "app_user"
-  password               = "app_password"
+  engine            = "mysql"
+  engine_version    = "8.0"
+  instance_class    = var.db_instance_class
+  allocated_storage = var.db_allocated_storage
+  identifier        = var.db_identifier
+  db_name           = var.db_name
+  username          = var.db_username
+  password          = var.db_password
+
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
-  skip_final_snapshot    = true
-  publicly_accessible    = true
-  multi_az               = false
+
+  multi_az            = var.multi_az
+  publicly_accessible = var.publicly_accessible
+  skip_final_snapshot = true
+  deletion_protection = false
 }
 
-# # IAM Policy for RDS access via IAM DB Authentication
-# resource "aws_iam_policy" "rds_iam_policy" {
-#   name        = "rds-iam-auth-policy-${var.project_name}"
-#   description = "Allows pods to authenticate with RDS using IAM"
+########################
+# Outputs
+########################
 
-#   policy = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [
-#       {
-#         Effect   = "Allow",
-#         Action   = "rds-db:connect",
-#         Resource = "arn:aws:rds-db:us-east-1:${data.aws_caller_identity.current.account_id}:dbuser:${aws_db_instance.mysql_db.id}/dbuser"
-#       }
-#     ]
-#   })
-# }
+output "rds_endpoint" {
+  description = "The endpoint of the RDS database"
+  value       = aws_db_instance.mysql_db.address
+}
 
-
-
-# # IAM Role and Service Account for EKS pod
-# resource "aws_iam_role" "irsa_role" {
-#   name               = "irsa-rds-access-${var.project_name}"
-#   assume_role_policy = module.eks.irsa_assume_role_policy
-# }
-
-# resource "aws_iam_role_policy_attachment" "irsa_policy_attach" {
-#   role       = aws_iam_role.irsa_role.name
-#   policy_arn = aws_iam_policy.rds_iam_policy.arn
-# }
-
-# output "rds_endpoint" {
-#   description = "The endpoint of the RDS database"
-#   value       = aws_db_instance.mysql_db.endpoint
-# }
-
-
+output "rds_port" {
+  description = "The port of the RDS database"
+  value       = aws_db_instance.mysql_db.port
+}
 
 output "rds_username" {
   description = "The username for the RDS database"
   value       = aws_db_instance.mysql_db.username
 }
 
-# output "kubeconfig" {
-#   description = "The generated kubeconfig for EKS cluster access"
-#   value       = module.eks.kubeconfig
-# }
+output "rds_db_name" {
+  description = "The initial database name"
+  value       = aws_db_instance.mysql_db.db_name
+}
+
+output "rds_security_group_id" {
+  description = "Security group protecting the RDS instance"
+  value       = aws_security_group.rds_sg.id
+}
+
+output "rds_subnet_group_name" {
+  description = "Subnet group used by the RDS instance"
+  value       = aws_db_subnet_group.rds_subnet_group.name
+}
+

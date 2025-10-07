@@ -10,9 +10,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  AWS_ROLE_ARN: arn:aws:iam::701612390900:role/service-role/GitHubActions
-  AWS_VPC_NAME: vpc-0ceb2a67ac499ce1a
-
+  AWS_ROLE_ARN: arn:aws:iam::323726447562:role/soat-tech-challenge-fast-food-role
 
 jobs:
   plan:
@@ -44,7 +42,7 @@ jobs:
       - id: plan
         name: Terraform plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -var 'region=${{ env.AWS_REGION }}' -var 'role_arn=${{ env.AWS_ROLE_ARN }}' -var 'vpc_name=${{ env.AWS_VPC_NAME }}'
+        run: terraform plan -no-color -var 'aws_profile=${{ env.AWS_ROLE_ARN }}'
 
       - id: push
         name: Terraform apply

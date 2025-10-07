@@ -5,13 +5,13 @@ terraform {
       version = "~> 5.0"
     }
   }
-  required_version = "~> 1.13.2"
+  #required_version = "~> 1.13.2"
 }
 
 # Configure the AWS Provider
 provider "aws" {
-  region = var.region
-  assume_role {
-    role_arn = var.role_arn
+  region  = var.aws_region
+    assume_role {
+    role_arn = var.aws_profile
   }
 }

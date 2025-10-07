@@ -32,8 +32,7 @@ Configurar as variáveis de ambiente no pipeline.yml:
 ```env
 env:
   AWS_REGION: <aws-region>
-  AWS_ROLE_ARN: arn:aws:iam::<account-id>:role/service-role/<role-name>
-  AWS_VPC_NAME: vpc-<id>
+  AWS_ROLE_ARN: <ROLE-ARN>
 ```
 
 ### Execução do Pipeline via Github Actions
