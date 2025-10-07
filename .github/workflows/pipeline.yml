@@ -10,7 +10,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  AWS_ROLE_ARN: arn:aws:iam::701612390900:role/service-role/GitHubActions
+  AWS_ROLE_ARN: arn:aws:iam::323726447562:role/soat-tech-challenge-fast-food-role
 
 jobs:
   plan:
@@ -37,12 +37,12 @@ jobs:
       - id: validate
         name: Terraform validate
         if: github.event_name == 'pull_request'
-        run: terraform validate -no-color
+        run: terraform validate -no-color -var 'aws_profile=${{ env.AWS_ROLE_ARN }}'
 
       - id: plan
         name: Terraform plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -var 'aws_profile=${{ env.AWS_ROLE_ARN }}'
+        run: terraform plan -no-color
 
       - id: push
         name: Terraform apply
