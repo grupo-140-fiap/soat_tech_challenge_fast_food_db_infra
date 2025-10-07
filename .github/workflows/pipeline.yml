@@ -47,4 +47,4 @@ jobs:
       - id: push
         name: Terraform apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -input=false -auto-approve
+        run: terraform apply -input=false -auto-approve -var 'aws_profile=${{ env.AWS_ROLE_ARN }}'
