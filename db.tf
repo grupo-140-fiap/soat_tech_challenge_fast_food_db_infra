@@ -82,4 +82,3 @@ output "rds_subnet_group_name" {
   description = "Subnet group used by the RDS instance"
   value       = aws_db_subnet_group.rds_subnet_group.name
 }
-
