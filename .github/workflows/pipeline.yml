@@ -10,7 +10,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  AWS_ROLE_ARN: arn:aws:iam::323726447562:role/soat-tech-challenge-fast-food-role
+  AWS_ROLE_ARN: arn:aws:iam::426315020032:role/soat-tech-challenge-fast-food-role
 
 jobs:
   plan:
